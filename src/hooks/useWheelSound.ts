@@ -14,7 +14,7 @@ export function useWheelSound() {
   const playTick = useCallback(() => {
     const now = Date.now();
     // Throttle ticks to prevent audio overload
-    if (now - lastTickRef.current < 30) return;
+    if (now - lastTickRef.current < 25) return;
     lastTickRef.current = now;
 
     try {
@@ -23,20 +23,48 @@ export function useWheelSound() {
         ctx.resume();
       }
 
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
+      // Create a punchy "click" sound like a wheel hitting a peg
+      const clickOsc = ctx.createOscillator();
+      const clickGain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
 
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
+      // High-pitched click
+      clickOsc.type = 'triangle';
+      clickOsc.frequency.setValueAtTime(1800 + Math.random() * 400, ctx.currentTime);
+      clickOsc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.03);
 
-      oscillator.frequency.value = 800 + Math.random() * 200;
-      oscillator.type = 'square';
+      // Bandpass filter for that wooden "tick" feel
+      filter.type = 'bandpass';
+      filter.frequency.value = 2000;
+      filter.Q.value = 2;
 
-      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+      // Sharp attack, quick decay
+      clickGain.gain.setValueAtTime(0.25, ctx.currentTime);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
 
-      oscillator.start(ctx.currentTime);
-      oscillator.stop(ctx.currentTime + 0.05);
+      clickOsc.connect(filter);
+      filter.connect(clickGain);
+      clickGain.connect(ctx.destination);
+
+      clickOsc.start(ctx.currentTime);
+      clickOsc.stop(ctx.currentTime + 0.06);
+
+      // Add a subtle low "thump" for body
+      const thumpOsc = ctx.createOscillator();
+      const thumpGain = ctx.createGain();
+
+      thumpOsc.type = 'sine';
+      thumpOsc.frequency.setValueAtTime(150, ctx.currentTime);
+      thumpOsc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.04);
+
+      thumpGain.gain.setValueAtTime(0.15, ctx.currentTime);
+      thumpGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+
+      thumpOsc.connect(thumpGain);
+      thumpGain.connect(ctx.destination);
+
+      thumpOsc.start(ctx.currentTime);
+      thumpOsc.stop(ctx.currentTime + 0.04);
     } catch (error) {
       console.error('Error playing tick sound:', error);
     }
