@@ -159,7 +159,7 @@ function App() {
           )}
 
           {/* Questions Editor */}
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5">
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-5 flex-1 min-h-0 flex flex-col overflow-hidden">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-white">Questions</h2>
               {removedCount > 0 && (
@@ -179,7 +179,7 @@ function App() {
               onChange={handleItemsChange}
             />
 
-            <div className="mt-5 pt-4 border-t border-[#2a2a2a]">
+            <div className="mt-5 pt-4 border-t border-[#2a2a2a] shrink-0">
               <ExportImport wheelConfig={wheelConfig} onImport={handleImport} />
             </div>
           </div>

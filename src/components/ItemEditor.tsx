@@ -39,14 +39,14 @@ export function ItemEditor({ items, onChange }: ItemEditorProps) {
   const itemCount = text.split('\n').filter((line) => line.trim()).length;
 
   return (
-    <div className="space-y-2">
+    <div className="flex-1 min-h-0 flex flex-col">
       <Textarea
         placeholder="Enter questions, one per line..."
         value={text}
         onChange={handleChange}
-        className="min-h-[250px] font-mono text-sm bg-[#111] border-[#2a2a2a] text-white placeholder:text-[#444] focus:border-[#444] rounded-lg resize-y"
+        className="flex-1 min-h-[100px] font-mono text-sm bg-[#111] border-[#2a2a2a] text-white placeholder:text-[#444] focus:border-[#444] rounded-lg resize-none"
       />
-      <div className="flex justify-between text-xs text-[#666]">
+      <div className="flex justify-between text-xs text-[#666] mt-2 shrink-0">
         <span>One per line</span>
         <span>{itemCount} questions</span>
       </div>
