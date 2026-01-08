@@ -46,16 +46,20 @@ export function getSegmentColor(index: number): string {
   return SEGMENT_COLORS[index % SEGMENT_COLORS.length];
 }
 
-export function parseQuestions(text: string): WheelItem[] {
+export function parseQuestions(text: string, existingItems: WheelItem[] = []): WheelItem[] {
   return text
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line.length > 0)
-    .map((question, index) => ({
-      id: generateId(),
-      question,
-      color: getSegmentColor(index),
-    }));
+    .map((question, index) => {
+      // Preserve ID if question already exists
+      const existing = existingItems.find((item) => item.question === question);
+      return {
+        id: existing?.id ?? generateId(),
+        question,
+        color: getSegmentColor(index),
+      };
+    });
 }
 
 export function truncateText(text: string, maxLength: number): string {

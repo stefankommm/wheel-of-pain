@@ -20,7 +20,7 @@ export function ItemEditor({ items, onChange }: ItemEditorProps) {
       isExternalUpdate.current = false;
       return;
     }
-    const currentItems = parseQuestions(text);
+    const currentItems = parseQuestions(text, items);
     const currentIds = currentItems.map((i) => i.question).sort().join('|');
     const externalIds = items.map((i) => i.question).sort().join('|');
     if (currentIds !== externalIds) {
@@ -32,7 +32,7 @@ export function ItemEditor({ items, onChange }: ItemEditorProps) {
     const newText = e.target.value;
     setText(newText);
     isExternalUpdate.current = true;
-    const newItems = parseQuestions(newText);
+    const newItems = parseQuestions(newText, items);
     onChange(newItems);
   };
 
